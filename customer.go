@@ -1,4 +1,4 @@
-package customer
+package structs
 
 import (
 	"github.com/beevik/guid"
@@ -7,23 +7,34 @@ import (
 )
 
 type customerId struct {
-	value guid.Guid
+	value guid.Guid `validate:"required"`
 }
 
-type customer struct {
-	id customerId `validate:"required"`
-	name string `validate:"required,min=5"`
-	age int `validate:"gte=18"`
+type customerName struct {
+	value string `validate:"required,min=5"`
 }
 
-func newCustomer(name string, age int) (*customer, error) {
+type customerAge struct {
+	value int `validate:"gte=18"`
+}
 
-	c := &customer{
+type Customer struct {
+	id   customerId
+	name customerName
+	age  customerAge
+}
+
+func NewCustomer(name string, age int) (*Customer, error) {
+	c := &Customer{
 		id: customerId{
 			value: *guid.New(),
 		},
-		name: name,
-		age: age,
+		name: customerName{
+			value: name,
+		},
+		age: customerAge{
+			value: age,
+		},
 	}
 
 	validate := validator.New(validator.WithPrivateFieldValidation())
